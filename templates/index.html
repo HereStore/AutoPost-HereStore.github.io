@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Post to Discord</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f0f0f0; /* Warna latar belakang */
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        form {
+            margin: 0 auto;
+            width: 70%;
+            background-color: #fff; /* Warna latar belakang form */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+        }
+        label, input, textarea {
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            width: 100%; /* Menentukan lebar */
+        }
+    </style>
+</head>
+<body>
+    <h1>Auto Post to Discord</h1>
+    <form id="send-message-form" action="/send-message" method="post">
+        <label for="token">Token Discord:</label>
+        <input type="text" id="token" name="token"><br>
+        <label for="channel_post">Channel ID for Auto Post:</label>
+        <input type="text" id="channel_post" name="channel_post" style="text-align: center;"><br>
+        <label for="channel_laporan">Channel ID for Auto Post Logs:</label>
+        <input type="text" id="channel_laporan" name="channel_laporan" style="text-align: center;"><br>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4"></textarea><br>
+        <label for="delay">Delay between Posts (seconds):</label>
+        <input type="number" id="delay" name="delay" min="1" value="1" style="text-align: center;"><br><br>
+        <input type="submit" value="Start Sending Message">
+    </form>
+    <div id="message-response"></div>
+    <form id="stop-message-form" action="/stop-message" method="post">
+        <input type="submit" value="Stop Sending Message">
+    </form>
+
+    <script>
+        document.getElementById("send-message-form").addEventListener("submit", function(event) {
+            // Mencegah pengiriman formulir secara default
+            event.preventDefault();
+
+            // Mengambil data formulir
+            var formData = new FormData(this);
+
+            // Mengirim permintaan POST ke server
+            fetch("/send-message", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Menampilkan respons dari server di dalam elemen dengan id "message-response"
+                document.getElementById("message-response").innerHTML = data;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        document.getElementById("stop-message-form").addEventListener("submit", function(event) {
+            // Mencegah pengiriman formulir secara default
+            event.preventDefault();
+
+            // Mengirim permintaan POST ke server
+            fetch("/stop-message", {
+                method: "POST"
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Menampilkan respons dari server di dalam elemen dengan id "message-response"
+                document.getElementById("message-response").innerHTML = data;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>
